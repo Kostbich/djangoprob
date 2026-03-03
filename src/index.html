@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚀 ДЕМО 2026 — Магазин обуви</title>
+    <title>djangoprob </title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
@@ -27,7 +27,6 @@
         th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
         th { background: linear-gradient(45deg, #34495e, #2c3e50); color: white; font-weight: bold; font-size: 16px; }
         
-        /* ✅ ЦВЕТА ТЗ! */
         .discount-high { background-color: #2E8B57 !important; color: white !important; }
         .out-of-stock { background-color: #ADD8E6 !important; }
         .both { background-color: #4682B4 !important; color: white !important; }
@@ -44,9 +43,9 @@
             <input type="email" id="login" placeholder="Логин" value="94d5ous@gmail.com">
             <input type="password" id="password" placeholder="Пароль" value="uzWC67">
             <br>
-            <button class="login-btn" onclick="setUser('администратор')">✅ АДМИН</button>
-            <button class="login-btn" onclick="setUser('менеджер')">👤 МЕНЕДЖЕР</button>
-            <button class="login-btn" onclick="setUser('гость')">👻 ГОСТЬ</button>
+            <button class="login-btn" onclick="setUser('администратор')"> АДМИН</button>
+            <button class="login-btn" onclick="setUser('менеджер')"> МЕНЕДЖЕР</button>
+            <button class="login-btn" onclick="setUser('гость')"> ГОСТЬ</button>
         </div>
         
         <!-- Главная -->
@@ -59,21 +58,18 @@
                 </div>
             </div>
             
-            <!-- Фильтры -->
             <div id="filters" class="filters" style="display: none;">
-                <label>🔍 Поиск: <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Название или артикул..."></label>
-                <label>📊 Остатки: 
+                <label>Поиск: <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Название или артикул..."></label>
+                <label>Остатки: 
                     <label><input type="radio" name="sort" value="asc" onclick="filterTable()" checked> ▲</label>
                     <label><input type="radio" name="sort" value="desc" onclick="filterTable()"> ▼</label>
                 </label>
             </div>
             
-            <!-- Админ кнопка -->
             <div id="adminPanel" style="display: none; padding: 20px; text-align: center;">
-                <button class="admin-btn" onclick="addProduct()">➕ ДОБАВИТЬ ТОВАР</button>
+                <button class="admin-btn" onclick="addProduct()"> ДОБАВИТЬ ТОВАР</button>
             </div>
             
-            <!-- Таблица -->
             <div class="table-container">
                 <table>
                     <thead>
@@ -86,7 +82,6 @@
                         </tr>
                     </thead>
                     <tbody id="productTable">
-                        <!-- Данные генерируются JS -->
                     </tbody>
                 </table>
             </div>
@@ -94,7 +89,6 @@
     </div>
 
     <script>
-        // ✅ ДЕМО ДАННЫЕ (10 товаров ТЗ)
         const products = [
             {article: 'A112T4', name: 'Ботинки Kari женские', price: 4990, stock: 6, discount: 3},
             {article: 'F635R4', name: 'Ботинки Marco Tozzi', price: 3244, stock: 13, discount: 2},
@@ -121,7 +115,6 @@
             document.getElementById('mainApp').style.display = 'block';
             document.getElementById('userName').textContent = currentUser.name + ` (${currentUser.role})`;
             
-            // Показать фильтры/кнопки по роли
             document.getElementById('filters').style.display = 
                 (role === 'администратор' || role === 'менеджер') ? 'flex' : 'none';
             document.getElementById('adminPanel').style.display = 
@@ -170,12 +163,12 @@
         }
         
         function addProduct() {
-            alert('✅ ФОРМА ДОБАВИТЬ ТОВАР\n\nПоля:\n• Артикул\n• Название\n• Цена (>0)\n• Количество\n• Скидка\n• Описание\n• Фото\n\nВалидация: цена>0, количество>=0');
+            alert('ФОРМА ДОБАВИТЬ ТОВАР\n\nПоля:\n• Артикул\n• Название\n• Цена (>0)\n• Количество\n• Скидка\n• Описание\n• Фото\n\nВалидация: цена>0, количество>=0');
         }
         
         function editProduct(product) {
             if (currentUser.role !== 'администратор') return;
-            alert(`✏️ РЕДАКТИРОВАТЬ ТОВАР\n\nАртикул: ${product.article}\nНазвание: ${product.name}\nЦена: ${product.price} ₽\nСклад: ${product.stock}\nСкидка: ${product.discount}%\n\n✅ CRUD: Изменить / Удалить`);
+            alert(`РЕДАКТИРОВАТЬ ТОВАР\n\nАртикул: ${product.article}\nНазвание: ${product.name}\nЦена: ${product.price} ₽\nСклад: ${product.stock}\nСкидка: ${product.discount}%\n\n✅ CRUD: Изменить / Удалить`);
         }
     </script>
 </body>
