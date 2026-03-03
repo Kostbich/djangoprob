@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 ДЕМО 2026 — Магазин обуви</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        .header { background: rgba(255,255,255,0.95); border-radius: 15px; padding: 20px 30px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .header h1 { color: #2c3e50; font-size: 28px; margin-bottom: 10px; }
+        .user-info { float: right; font-size: 18px; color: #34495e; font-weight: bold; }
+        
+        .login-form { background: rgba(255,255,255,0.95); border-radius: 15px; padding: 50px; max-width: 500px; margin: 50px auto; box-shadow: 0 20px 40px rgba(0,0,0,0.3); text-align: center; }
+        .login-form input { width: 100%; padding: 15px; margin: 15px 0; font-size: 18px; border: 2px solid #ddd; border-radius: 10px; }
+        .login-btn { background: linear-gradient(45deg, #4CAF50, #45a049); color: white; border: none; padding: 15px 40px; font-size: 18px; border-radius: 10px; cursor: pointer; margin: 10px; width: 200px; font-weight: bold; }
+        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        
+        .filters { background: rgba(255,255,255,0.95); border-radius: 15px; padding: 20px; margin-bottom: 20px; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+        .filters input, .filters select { padding: 12px; font-size: 16px; border: 2px solid #ddd; border-radius: 8px; }
+        .admin-btn { background: linear-gradient(45deg, #4CAF50, #45a049); color: white; border: none; padding: 15px 30px; font-size: 16px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        
+        .table-container { background: rgba(255,255,255,0.95); border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: linear-gradient(45deg, #34495e, #2c3e50); color: white; font-weight: bold; font-size: 16px; }
+        
+        /* ✅ ЦВЕТА ТЗ! */
+        .discount-high { background-color: #2E8B57 !important; color: white !important; }
+        .out-of-stock { background-color: #ADD8E6 !important; }
+        .both { background-color: #4682B4 !important; color: white !important; }
+        
+        tr:hover { transform: scale(1.01); transition: all 0.2s; }
+        .logout-btn { background: linear-gradient(45deg, #f44336, #d32f2f); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; float: right; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Логин -->
+        <div id="loginForm" class="login-form">
+            <h1>🔐 ВХОД В СИСТЕМУ</h1>
+            <input type="email" id="login" placeholder="Логин" value="94d5ous@gmail.com">
+            <input type="password" id="password" placeholder="Пароль" value="uzWC67">
+            <br>
+            <button class="login-btn" onclick="setUser('администратор')">✅ АДМИН</button>
+            <button class="login-btn" onclick="setUser('менеджер')">👤 МЕНЕДЖЕР</button>
+            <button class="login-btn" onclick="setUser('гость')">👻 ГОСТЬ</button>
+        </div>
+        
+        <!-- Главная -->
+        <div id="mainApp" style="display: none;">
+            <div class="header">
+                <h1>📦 ТОВАРЫ НА СКЛАДЕ</h1>
+                <div style="float: right;">
+                    <span id="userName" class="user-info"></span>
+                    <button class="logout-btn" onclick="showLogin()">🚪 Выход</button>
+                </div>
+            </div>
+            
+            <!-- Фильтры -->
+            <div id="filters" class="filters" style="display: none;">
+                <label>🔍 Поиск: <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Название или артикул..."></label>
+                <label>📊 Остатки: 
+                    <label><input type="radio" name="sort" value="asc" onclick="filterTable()" checked> ▲</label>
+                    <label><input type="radio" name="sort" value="desc" onclick="filterTable()"> ▼</label>
+                </label>
+            </div>
+            
+            <!-- Админ кнопка -->
+            <div id="adminPanel" style="display: none; padding: 20px; text-align: center;">
+                <button class="admin-btn" onclick="addProduct()">➕ ДОБАВИТЬ ТОВАР</button>
+            </div>
+            
+            <!-- Таблица -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Артикул</th>
+                            <th>Название</th>
+                            <th>Цена, ₽</th>
+                            <th>На складе</th>
+                            <th>Скидка %</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productTable">
+                        <!-- Данные генерируются JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ✅ ДЕМО ДАННЫЕ (10 товаров ТЗ)
+        const products = [
+            {article: 'A112T4', name: 'Ботинки Kari женские', price: 4990, stock: 6, discount: 3},
+            {article: 'F635R4', name: 'Ботинки Marco Tozzi', price: 3244, stock: 13, discount: 2},
+            {article: 'H782T5', name: 'Туфли Kari мужские', price: 4499, stock: 5, discount: 4},
+            {article: 'G783F5', name: 'Ботинки Рос', price: 5900, stock: 8, discount: 2},
+            {article: 'J384T6', name: 'Rieker мужские', price: 3800, stock: 16, discount: 2},
+            {article: 'D572U8', name: 'Кроссовки (нет)', price: 4100, stock: 0, discount: 3},      // ГОЛУБОЙ
+            {article: 'X999Z9', name: 'Супер скидка 25%!', price: 999, stock: 3, discount: 25},    // ЗЕЛЕНЫЙ
+            {article: 'Y888Y8', name: 'Ботинки зимние', price: 12000, stock: 2, discount: 18},      // ЗЕЛЕНЫЙ
+            {article: 'Z777Z7', name: 'Тапочки (нет)', price: 500, stock: 0, discount: 13},         // ДВА ЦВЕТА
+            {article: 'W666W6', name: 'Кроссовки скидка!', price: 5500, stock: 9, discount: 20}      // ЗЕЛЕНЫЙ
+        ];
+        
+        let currentUser = null;
+        
+        function setUser(role) {
+            const users = {
+                'администратор': 'Никифорова В.Н.',
+                'менеджер': 'Степанов М.А.',
+                'гость': 'Гость системы'
+            };
+            currentUser = {role: role, name: users[role]};
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            document.getElementById('userName').textContent = currentUser.name + ` (${currentUser.role})`;
+            
+            // Показать фильтры/кнопки по роли
+            document.getElementById('filters').style.display = 
+                (role === 'администратор' || role === 'менеджер') ? 'flex' : 'none';
+            document.getElementById('adminPanel').style.display = 
+                role === 'администратор' ? 'block' : 'none';
+            
+            filterTable();
+        }
+        
+        function showLogin() {
+            document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'block';
+            currentUser = null;
+        }
+        
+        function filterTable() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const sortAsc = document.querySelector('input[name="sort"]:checked').value === 'asc';
+            
+            let filtered = products.filter(p => 
+                p.name.toLowerCase().includes(search) || p.article.includes(search)
+            );
+            
+            filtered.sort((a, b) => sortAsc ? a.stock - b.stock : b.stock - a.stock);
+            
+            const tbody = document.getElementById('productTable');
+            tbody.innerHTML = '';
+            
+            filtered.forEach(product => {
+                const row = tbody.insertRow();
+                row.className = getRowClass(product);
+                row.onclick = () => editProduct(product);
+                
+                row.insertCell(0).textContent = product.article;
+                row.insertCell(1).textContent = product.name;
+                row.insertCell(2).textContent = product.price.toLocaleString();
+                row.insertCell(3).textContent = product.stock;
+                row.insertCell(4).textContent = product.discount;
+            });
+        }
+        
+        function getRowClass(product) {
+            let classes = [];
+            if (product.discount > 15) classes.push('discount-high');
+            if (product.stock === 0) classes.push('out-of-stock');
+            return classes.join(' ') || '';
+        }
+        
+        function addProduct() {
+            alert('✅ ФОРМА ДОБАВИТЬ ТОВАР\n\nПоля:\n• Артикул\n• Название\n• Цена (>0)\n• Количество\n• Скидка\n• Описание\n• Фото\n\nВалидация: цена>0, количество>=0');
+        }
+        
+        function editProduct(product) {
+            if (currentUser.role !== 'администратор') return;
+            alert(`✏️ РЕДАКТИРОВАТЬ ТОВАР\n\nАртикул: ${product.article}\nНазвание: ${product.name}\nЦена: ${product.price} ₽\nСклад: ${product.stock}\nСкидка: ${product.discount}%\n\n✅ CRUD: Изменить / Удалить`);
+        }
+    </script>
+</body>
+</html>
